@@ -7,6 +7,4 @@ until I find a bundle worth investing not tied to my main account.
 Look more into posting (to claim the data + get another bundle to do more testing).
 Right now, I'm basing a lot of my code on the old code/branch.
 
-Logging if script fails.
-
-On error, change link id with regex.
+Check if file exists on system then skip.

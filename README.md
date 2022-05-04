@@ -1,11 +1,22 @@
 # Itch.io Bundle Downloader
 
-Itch.io Bundle Downloader is a python script that allows you to download all items in a bundle you bought. I made this when I bought the Ukraine Bundle. I got lazy and made this terrible script. Just start the application with `python download.py` and input the id of the bundle you have. This downloads items one by one but may be improved in the future.
+I've decided to rewrite my entire script because of how messy and unreadable it was to work on the previous one. This project has also changed from having the ability to download the games through only a url (without an account) to now only being able to download games with only an account (though this will be changed in the future once I have access to a bundle that isn't linked to my account).
+
+If you want to only download a bundle where you don't have an account tied to the bundle (so you only have the url to deal with) and this script still currenly doesn't have the option to download bundles without an account, it is recommended that you visit and use the older branch though it is serverly outdated, quite unstable, and may not function well.
 
 ## Usage
 
-To be able to use this script, download the application either through git cloning this repo or downloading the zip file, to which you need to extract it. Once you have the contents in a folder, open up the terminal or console, and go into the directory which houses the contents, specifically the `download.py` file. Type into your terminal or console, `python download.py` to which you should have text popup to input the url id (Note: Make sure it is the ID of the bundle, not the full bundle's website). Once inputted, it will start to download all of the files, in which you can view the contents of the files in the folder of the same location.
+To be able to use this script, we first must install the necessary modules to make the script work. Firstly, do `pip install -r requirements.txt` which will install all of the modules. Once that is done, you can be able to use the script.
 
-You're ready to use this script, have fun!
+If you want to make things easier for you, instead of having to constantly rewrite the exact same username or password when the script asks you for it, you can pass it on as a flag, with `-n` being the username, and `-p` being the password.
 
-If you are having errors: use the flag `-d` to see what the script is doing.
+If you want to make things even easier for you, instead you can use enviroment variables to your advantage, being more secure than inputting data or passing it off as an argument. You can utilize this by changing the name of the template enviromental file from `.template.env` to just `.env`, filling out your username and password into the correct fields, then passing the `-e` flag and everything should be working out as normal.
+
+Have fun with this script!
+
+## Shoutout
+[shakeyourbunny](https://github.com/shakeyourbunny) forked this project (mainly refering to the old branch) and [made their own python script](https://github.com/shakeyourbunny/itch-downloader) with none of my code left, to which I was inspired (and was given realization that many more users will be downloading with an account tied to them then without) to retackle this problem of downloading bundles but now with an account tied to it and making the code more pretty with comments to indicate what that specific part of the code was doing.
+
+The issue that I see with their script, however, is that it takes many layers to be able to link the account before downloading games, which this script was an attempt to severly simplify that process.
+
+Still, I believe that this script is still noteworthy to check out in case my script fails to work correctly.
