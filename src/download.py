@@ -27,8 +27,6 @@ def w3g3a5v6_ssl_hwcdn_net(response_url, bundle, game, upload):
             file.write(data)
             done = int((dl / length) * 50)
             print("\r[{}{}{}] [{}/{}]".format("=" * done, " " * (50 - done), str(dl), str(length)), end = "")
-            # sys.stdout.write("\r[%s%s] " % ('=' * done, ' ' * (50-done)) + str(dl) + " of " + str(length))
-            # sys.stdout.flush()
     file.close()
 
 def start():
