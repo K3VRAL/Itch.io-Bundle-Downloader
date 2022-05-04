@@ -1,20 +1,19 @@
 # This starts to make all the folders for the mapped games
 
-import requests
 import os
 import re
 
 import setup
 
-def makeGameFolder(name):
-    print("Making Game Folder [{}]", name)
-    gamesPath = "{}/downloaded/{}".format(os.getcwd(), re.sub("/", "_", name))
+def makeGameFolder(bundle, name):
+    print("Making Game Folder [{}] from Bundle [{}]".format(name, bundle))
+    gamesPath = "{}/downloaded/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", name))
     if not os.path.isdir(gamesPath):
         os.mkdir(gamesPath)
 
 def makeBundleFolder(name):
-    print("Making Bundle Folder [{}]", name)
-    bundlePath = "{}/downloaded/{}".format(os.getcwd(), name)
+    print("Making Bundle Folder [{}]".format(name))
+    bundlePath = "{}/downloaded/{}".format(os.getcwd(), re.sub("/", "_", name))
     if not os.path.isdir(bundlePath):
         os.mkdir(bundlePath)
 

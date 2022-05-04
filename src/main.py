@@ -6,7 +6,8 @@ import dotenv
 
 import setup
 import user
-import mapping
+import mapp
+import download
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--username", help = "The input of the user's username for itch.io")
@@ -47,7 +48,7 @@ def main(argv):
             print("Username or Password inputted is incorrect")
             sys.exit(1)
     print("Received valid cookies and csfr token")
-    mapping.start()
+    mapp.start()
     download.start()
 
 if __name__ == "__main__":

@@ -1,13 +1,13 @@
 # This gets the necessary login cookies before we can start downloading games
 
-import requests
 import bs4
 
 import setup
+import reqretry
 
 # Getting the login cookie
 def login(name, pass_):
-    r = requests.get("https://itch.io/", headers = setup.headers)
+    r = reqretry.get("https://itch.io/", headers = setup.headers)
 
     # We need the csrf token before we can do anything
     csrf_token_cookie = None
@@ -35,7 +35,7 @@ def login(name, pass_):
 
     # Adding the user token to login_cookie for future use
     try:
-        r = requests.post("https://itch.io/login", headers = setup.headers, cookies = login_cookie, data = login_payload)
+        r = reqretry.post("https://itch.io/login", headers = setup.headers, cookies = login_cookie, data = login_payload)
         login_cookie["itchio"] = r.cookies["itchio"]
     except:
         setup.cookies = None

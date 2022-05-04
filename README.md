@@ -9,9 +9,3 @@ To be able to use this script, download the application either through git cloni
 You're ready to use this script, have fun!
 
 If you are having errors: use the flag `-d` to see what the script is doing.
-
-## TODO
-
-Make a burner account on itch.io to see if this script would still work without an account.
-
-Logging if script fails
