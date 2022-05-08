@@ -2,6 +2,8 @@
 
 import urllib.parse
 import json
+import os
+import re
 
 import reqretry
 import setup
@@ -12,9 +14,24 @@ def checking(r, bundle, game, upload, url):
     try:
         response_url = json.loads(r.text)["url"]
         response_parsed = urllib.parse.urlparse(response_url)
+
+        if response_parsed.hostname == "w3g3a5v6.ssl.hwcdn.net":
+            r = reqretry.get(response_url, stream = True)
+            filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
+            length = r.headers["Content-Length"]
+
+            download.downloadFile(r, length, filename, "w3g3a5v6_ssl_hwcdn_net")
+        elif response_parsed.hostname == "drive.google.com": # TODO
+            error.write("Support in development - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
+        elif response_parsed.hostname == "docs.google.com": # TODO
+            error.write("Support in development - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
+        elif response_parsed.hostname == "study-japanese.net": # TODO
+            error.write("Support in development - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
+        elif response_parsed.hostname == "www.amazon.com": # TODO
+            error.write("Support in development - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
+        elif response_parsed.hostname == "www.oddwarg.com": # TODO
+            error.write("Support in development - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
+        else:
+            error.write("Download is currently not supported - Upload[{}] ID[{}] URL[{}] ResponseURL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url, game))
     except:
-        error.write("Game [{}] of Upload [{}] with ID [{}] has posted or recieved incorrectly; URL is [{}].".format(game, upload, setup.data[bundle]["games"][game]["uploads"][upload], url))
-    if response_parsed.hostname == "w3g3a5v6.ssl.hwcdn.net":
-        download.w3g3a5v6_ssl_hwcdn_net(response_url, bundle, game, upload)
-    else:
-        error.write("Game [{}] of Upload [{}] with ID [{}] has a URL that hasn't been supported to download; URL is [{}] and Response URL is [{}].".format(game, upload, setup.data[bundle]["games"][game]["uploads"][upload], url, response_url))
+        error.write("Posted or recieved incorrectly, or something went wrong in the code - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))

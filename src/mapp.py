@@ -64,12 +64,10 @@ def mapGames():
                     continue
 
                 # All Else Fails
-                error.write("!!!ERROR STARTS HERE!!!")
+                error.write("!!!ERROR!!!")
                 error.write("{}".format(game))
-                error.write("!!!ERROR ENDS HERE!!!")
-                print("!!!An error has occurred when trying to find game download link. It is recommended that you check out the error file to find more details. If you wish to help with the development of the script, please report this to the maintainers. REMOVE ALL THE REVEALING INFORMATION/LINKS (specifically look out for [.../download/ID]) before posting the above to the `Issues` in GitHub ({}) so this can be resolved safely!!!".format("https://github.com/K3VRAL/Itch.io-Bundle-Downloader/issues"))
-                print("Exitting...")
-                sys.exit(1)
+                error.write("!!!ERROR!!!")
+                print("Game Given Error Skipping")
 
 def mapPages():
     print("Getting pages from all bundles")

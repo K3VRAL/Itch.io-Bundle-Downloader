@@ -1,34 +1,32 @@
 # This starts to download all the mapped games
 
 import urllib.parse
-import re
 import validators
-import os
 import sys
 
 import setup
 import make
 import reqretry
 import validurls
+import error
 
-def w3g3a5v6_ssl_hwcdn_net(response_url, bundle, game, upload):
-    r = reqretry.get(response_url, stream = True)
-    filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
-    length = r.headers["Content-Length"]
-
-    file = open(filename, "wb")
-    if length is None:
-        file.write(r.content)
+def downloadFile(reqretry, length, filename, origFunction = ""):
+    file = open(filename, "w")
+    if not setup.args.debug:
+        if length is None:
+            file.write(r.content)
+        else:
+            dl = 0
+            length = int(length)
+            for data in r.iter_content(chunk_size = 65536):
+                dl += len(data)
+                file.write(data)
+                done = int((dl / length) * 50)
+                sys.stdout.write("\r[%s%s] [%d/%d]" % ("=" * done, " " * (50 - done), dl, length))
+                sys.stdout.flush()
+        print("")
     else:
-        dl = 0
-        length = int(length)
-        for data in r.iter_content(chunk_size = 4096):
-            dl += len(data)
-            file.write(data)
-            done = int((dl / length) * 50)
-            sys.stdout.write("\r[%s%s] [%d/%d]" % ("=" * done, " " * (50 - done), dl, length))
-            sys.stdout.flush()
-    print("")
+        file.write("Hostname[{}] File_Length[{}]".format(origFunction, length))
     file.close()
 
 def start():
@@ -52,7 +50,7 @@ def start():
             gameUrl = urllib.parse.urlparse(setup.data[bundle]["games"][game]["url"])
             uploads = setup.data[bundle]["games"][game]["uploads"].keys()
             if len(uploads) == 0:
-                error.write("Game [{}] with URL [{}] has no uploads.".format(game, setup.data[bundle]["games"][game]["url"]))
+                error.write("No Uploads - Game[{}] URL[{}]".format(game, setup.data[bundle]["games"][game]["url"]))
             upload_i = 0
             for upload in uploads:
                 upload_i += 1
@@ -63,8 +61,8 @@ def start():
                 payload = { "csrf_token": setup.csrf }
                 url = "{}://{}/{}/file/{}".format(gameUrl.scheme, gameUrl.hostname, gameUrl.path.split("/")[1], setup.data[bundle]["games"][game]["uploads"][upload])
                 if not validators.url(url):
-                    error.write("Game [{}] of Upload [{}] with ID [{}] has a malformed URL; URL is [{}]".format(game, upload, setup.data[bundle]["games"][game]["uploads"][upload], url))
+                    error.write("Malformed URL - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))
                     continue
+               
                 r = reqretry.post(url, headers = setup.headers, cookies = setup.cookies, data = payload, params = params)
-                
                 validurls.checking(r, bundle, game, upload, url)

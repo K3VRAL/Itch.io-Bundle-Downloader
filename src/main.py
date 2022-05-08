@@ -1,7 +1,6 @@
 # Main function and console flag arguments
 
 import sys
-import argparse
 import dotenv
 
 import setup
@@ -9,26 +8,19 @@ import user
 import mapp
 import download
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--username", help = "The input of the user's username for itch.io")
-parser.add_argument("-p", "--password", help = "The input of the user's password for itch.io")
-parser.add_argument("-e", "--env", help = "Have the input in a .env file and read the username and password from there", action = argparse.BooleanOptionalAction)
-parser.set_defaults(env = False)
-args = parser.parse_args()
-
 def main(argv):
     print("Username and Password being inputted")
-    name = args.username
-    pass_ = args.password
-    if not args.env:
+    name = setup.args.username
+    pass_ = setup.args.password
+    if not setup.args.env:
         while True:
             if setup.cookies != None and setup.csfr != None:
                 break
-            while args.username == None:
+            while setup.args.username == None:
                 name = input("Input Username of itch.io: ")
                 if name != "":
                     break
-            while args.password == None:
+            while setup.args.password == None:
                 pass_ = input("Input Password of itch.io: ")
                 if pass_ != "":
                     break
@@ -52,5 +44,9 @@ def main(argv):
     download.start()
 
 if __name__ == "__main__":
-    setup.init()
-    main(sys.argv[1:])
+    try:
+        setup.init()
+        main(sys.argv[1:])
+    except KeyboardInterrupt:
+        print("Exiting...")
+        sys.exit(1)

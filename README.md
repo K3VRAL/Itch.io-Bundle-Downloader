@@ -6,13 +6,13 @@ If you want to only download a bundle where you don't have an account tied to th
 
 ## Usage
 
-To be able to use this script, we first must install the necessary modules to make the script work. Firstly, do `pip install -r requirements.txt` which will install all of the modules. Once that is done, you can be able to use the script. With that out of the way, you can run the script with `pythong src/main.py [ARGS]` where the arguments are listed below.
+To be able to use this script, you first must install the necessary modules to make the script work. Firstly, do `pip install -r requirements.txt` which will install all of the modules. With that out of the way, you can run the script with `python src/main.py [ARGS]` where the arguments are listed below.
 
 If you want to make things easier for you, instead of having to constantly rewrite the exact same username or password when the script asks you for it, you can pass it on as a flag, with `-n` being the username, and `-p` being the password.
 
 If you want to make things even easier for you, instead you can use enviroment variables to your advantage, being more secure than inputting data or passing it off as an argument. You can utilize this by changing the name of the template enviromental file from `.template.env` to just `.env`, filling out your username and password into the correct fields, then passing the `-e` flag and everything should be working out as normal.
 
-If you want to make things even more easier for you, thankfully, if you are a Linux user, you should be able to run `sh itch_bundle_download.sh ARGS` and with all the regular arguments you would usually do instead of having to do the ugly `python src/main.py [ARGS]`.
+If you want to make things even more easier for you, thankfully, if you are a Linux user, you should be able to run `sh itch_bundle_download.sh [ARGS]` and with all the regular arguments you would usually do instead of having to do the ugly `python src/main.py [ARGS]`.
 
 Have fun with this script!
 
