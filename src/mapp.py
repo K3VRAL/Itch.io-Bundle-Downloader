@@ -9,6 +9,7 @@ import setup
 import reqretry
 import error
 import valid
+import make
 
 def mapUploads(bundle, name):
     r = reqretry.get(setup.data[bundle]["games"][name]["url"], cookies = setup.cookies)
@@ -107,10 +108,12 @@ def mapBundles():
         name = "{}".format(bundle.a.get_text())
         print("-[{}/{}] | Found Bundle [{}]".format(bundle_i, len(bundles), name))
         setup.data[name] = { "link": bundle.a["href"] }
+        make.makeBundleFolder(name)
 
 # Starting to download bundle data
 def start():
     print("Starting to map all bundles")
+    make.makeDownloadFolder()
     mapBundles()
     mapPages()
     mapGames()
