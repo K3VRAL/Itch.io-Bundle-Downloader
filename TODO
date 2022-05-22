@@ -5,8 +5,6 @@ until I find a bundle worth investing not tied to my main account.
 Look more into posting (to claim the item; get another bundle to do more testing).
 Right now, I'm basing a lot of my code on the old code/branch.
 
-Skip if file exists on system.
+Implement all links for "support to download in developments".
 
-Use grequests for async downloading.
-
-Support to download on every possible website/redirection (might not be possible).
+Add options to download specific bundles.

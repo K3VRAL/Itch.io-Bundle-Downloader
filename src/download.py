@@ -7,12 +7,12 @@ import sys
 import setup
 import make
 import reqretry
-import validurls
+import valid
 import error
 
-def downloadFile(reqretry, length, filename, origFunction = ""):
-    file = open(filename, "w")
+def downloadFile(r, length, filename, origFunction):
     if not setup.args.debug:
+        file = open(filename, "wb")
         if length is None:
             file.write(r.content)
         else:
@@ -25,9 +25,11 @@ def downloadFile(reqretry, length, filename, origFunction = ""):
                 sys.stdout.write("\r[%s%s] [%d/%d]" % ("=" * done, " " * (50 - done), dl, length))
                 sys.stdout.flush()
         print("")
+        file.close()
     else:
+        file = open(filename, "w")
         file.write("Hostname[{}] File_Length[{}]".format(origFunction, length))
-    file.close()
+        file.close()
 
 def start():
     print("Starting to download all mapped bundles")
@@ -53,16 +55,19 @@ def start():
                 error.write("No Uploads - Game[{}] URL[{}]".format(game, setup.data[bundle]["games"][game]["url"]))
             upload_i = 0
             for upload in uploads:
+                url = "{}://{}/{}/file/{}".format(gameUrl.scheme, gameUrl.hostname, gameUrl.path.split("/")[1], setup.data[bundle]["games"][game]["uploads"][upload])
+                if not validators.url(url):
+                    error.write("Malformed URL - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))
+                    continue
+                if not setup.data[bundle]["games"][game]["uploads"][upload].isdigit():
+                    error.write("ID is not an integer - Upload[{}] ID[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], game))
+                    continue
+
                 upload_i += 1
                 print("---[{}/{}] | Downloading Upload [{}]".format(upload_i, len(uploads), upload))
                 
                 key = gameUrl.path.split("/")[len(gameUrl.path.split("/"))-1]
                 params = { "source": "game_download", "key": key }
                 payload = { "csrf_token": setup.csrf }
-                url = "{}://{}/{}/file/{}".format(gameUrl.scheme, gameUrl.hostname, gameUrl.path.split("/")[1], setup.data[bundle]["games"][game]["uploads"][upload])
-                if not validators.url(url):
-                    error.write("Malformed URL - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))
-                    continue
-               
-                r = reqretry.post(url, headers = setup.headers, cookies = setup.cookies, data = payload, params = params)
-                validurls.checking(r, bundle, game, upload, url)
+                r = reqretry.post(url, cookies = setup.cookies, data = payload, params = params)
+                valid.checking(r, bundle, game, upload, url)

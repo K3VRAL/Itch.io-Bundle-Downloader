@@ -1,3 +1,2 @@
 #!/bin/sh
-
-python src/main.py $*
+python -B src/main.py $*

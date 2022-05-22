@@ -7,7 +7,7 @@ import reqretry
 
 # Getting the login cookie
 def login(name, pass_):
-    r = reqretry.get("https://itch.io/", headers = setup.headers)
+    r = reqretry.get("https://itch.io/")
 
     # We need the csrf token before we can do anything
     csrf_token_cookie = None
@@ -35,7 +35,7 @@ def login(name, pass_):
 
     # Adding the user token to login_cookie for future use
     try:
-        r = reqretry.post("https://itch.io/login", headers = setup.headers, cookies = login_cookie, data = login_payload)
+        r = reqretry.post("https://itch.io/login", cookies = login_cookie, data = login_payload)
         login_cookie["itchio"] = r.cookies["itchio"]
     except:
         setup.cookies = None

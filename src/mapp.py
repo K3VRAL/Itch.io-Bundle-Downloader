@@ -2,22 +2,37 @@
 
 import bs4
 import sys
+import os
+import re
 
 import setup
 import reqretry
 import error
+import valid
 
 def mapUploads(bundle, name):
-    r = reqretry.get(setup.data[bundle]["games"][name]["url"], headers = setup.headers, cookies = setup.cookies)
+    r = reqretry.get(setup.data[bundle]["games"][name]["url"], cookies = setup.cookies)
 
     uploads = bs4.BeautifulSoup(r.text, "html.parser").find("div", class_ = "upload_list_widget").find_all("div", class_ = "upload")
+    upload_i = 0
     for upload in uploads:
+        upload_i += 1
         upload_name = upload.find("strong", class_ = "name").get_text()
+        print("----[{}/{}] | Looking at Upload [{}] - ".format(upload_i, len(uploads), upload_name), end = "")
         try:
             upload_id = upload.find("a", class_ = "button download_btn")["data-upload_id"]
         except:
             upload_id = upload.div.get_text()
-        setup.data[bundle]["games"][name]["uploads"][upload_name] = upload_id
+
+        filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", name), re.sub("/", "_", upload_name))
+        if not os.path.isfile(filename):
+            setup.data[bundle]["games"][name]["uploads"][upload_name] = upload_id
+            print("Adding to queue")
+        else:
+            print("Already downloaded")
+    if len(setup.data[bundle]["games"][name]["uploads"]) == 0:
+        del setup.data[bundle]["games"][name]
+
 
 def mapGames():
     print("Getting all items from each bundle")
@@ -27,9 +42,9 @@ def mapGames():
         bundle_i += 1
         print("-[{}/{}] | Looking at Bundle [{}]".format(bundle_i, len(bundles), bundle))
         pages = setup.data[bundle]["pages"]
-        for page in range(1, pages + 1):
+        for page in range(pages + 1):
             print("--[{}/{}] | Looking at Page".format(page, pages))
-            r = reqretry.get("https://itch.io{}?page={}".format(setup.data[bundle]["link"], page), headers = setup.headers, cookies = setup.cookies)
+            r = reqretry.get("https://itch.io{}?page={}".format(setup.data[bundle]["link"], page), cookies = setup.cookies)
             
             games = bs4.BeautifulSoup(r.text, "html.parser").find("div", class_ = "game_list").find_all("div", class_ = "game_row")
             game_i = 0
@@ -50,6 +65,7 @@ def mapGames():
                 findingDownload = game.find("form", class_ = "form")
                 if findingDownload != None:
                     print("Game Not Claimed")
+                    error.write("\"Game not claimed\" is currently under development - Page[{}/{}] Game[{}/{}] Bundle[{}] Game[{}] - Error[{}]".format(page, len(pages), game_i, len(games), bundle, name, game))
                     continue
 
                 # (Weird) View Page/REST: GET
@@ -60,7 +76,7 @@ def mapGames():
                     print("Game Viewing Page")
                     name = game.find("h2", class_ = "game_title").a.get_text()
                     url = findingDownload["href"]
-                    setup.data[bundle]["games"][name] = { "url": url, "uploads": {}}
+                    error.write("Unable to download due to link being disabled - Page[{}/{}] Game[{}/{}] Bundle[{}] Game[{}] URL[{}]".format(page, len(pages), game_i, len(games), bundle, name, url))
                     continue
 
                 # All Else Fails
@@ -73,7 +89,7 @@ def mapPages():
     print("Getting pages from all bundles")
     bundles = setup.data.keys()
     for bundle in bundles:
-        r = reqretry.get("https://itch.io{}".format(setup.data[bundle]["link"]), headers = setup.headers, cookies = setup.cookies)
+        r = reqretry.get("https://itch.io{}".format(setup.data[bundle]["link"]), cookies = setup.cookies)
 
         page = int(bs4.BeautifulSoup(r.text, "html.parser").find("span", class_ = "pager_label").a.get_text())
         print("-Found [{}] Pages in Bundle [{}]".format(page, bundle))
@@ -82,7 +98,7 @@ def mapPages():
 
 def mapBundles():
     print("Getting all bundles from user")
-    r = reqretry.get("https://itch.io/my-purchases/bundles", headers = setup.headers, cookies = setup.cookies)
+    r = reqretry.get("https://itch.io/my-purchases/bundles", cookies = setup.cookies)
 
     bundles = bs4.BeautifulSoup(r.text, "html.parser").find("section", class_ = "bundle_keys").find_all("li")
     bundle_i = 0
