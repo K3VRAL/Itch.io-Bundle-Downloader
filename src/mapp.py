@@ -115,5 +115,26 @@ def start():
     print("Starting to map all bundles")
     make.makeDownloadFolder()
     mapBundles()
-    mapPages()
-    mapGames()
+
+    try:
+        print("")
+        bundles = list(setup.data.keys())
+        bundle_i = 0
+        for bundle in bundles:
+            bundle_i += 1
+            print("{}: {}".format(bundle_i, bundle))
+        inp = "".join(input("Which bundles do you want to exclude? (If you don't want to exclude anything, just enter in with no input) ")).split(" ")
+        if not (len(inp) == 1 and inp[0] == ""):
+            for i in inp:
+                bundle = bundles[int(i) - 1]
+                if bundle in setup.data:
+                    del setup.data[bundle]
+        print("")
+    except:
+        print("Incorrect input")
+        sys.exit(1)
+
+    bundles = list(setup.data.keys())
+    if len(bundles) > 0:
+        mapPages()
+        mapGames()

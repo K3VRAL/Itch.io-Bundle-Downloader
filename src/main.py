@@ -41,7 +41,12 @@ def main(argv):
             sys.exit(1)
     print("Received valid cookies and csfr token")
     mapp.start()
-    download.start()
+
+    bundles = list(setup.data.keys())
+    if len(bundles) > 0:
+        download.start()
+    
+    print("Finished")
 
 if __name__ == "__main__":
     try:
