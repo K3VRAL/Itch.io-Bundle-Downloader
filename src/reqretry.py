@@ -11,7 +11,7 @@ def get(url, cookies = "", data = "", params = "", stream = False, allow_redirec
         try:
             return requests.get(url, headers = setup.headers, cookies = cookies, data = data, params = params, stream = stream, allow_redirects = allow_redirects, timeout = 5)
         except requests.exceptions.Timeout:
-            error.write("Get Timed-out - NUMB[{}/5] URL[{}]".format(i, url))
+            pass
     error.write("Get request timed-out and/or returned nothing (ignore error line below) - URL[{}]".format(url))
 
 def post(url, cookies = "", data = "", params = "", stream = False, allow_redirects = True):
@@ -19,5 +19,5 @@ def post(url, cookies = "", data = "", params = "", stream = False, allow_redire
         try:
             return requests.post(url, headers = setup.headers, cookies = cookies, data = data, params = params, stream = stream, allow_redirects = allow_redirects, timeout = 5)
         except requests.exceptions.Timeout:
-            error.write("Post Timed-out - NUMB[{}/5] URL[{}]".format(i, url))
+            pass
     error.write("Post request timed-out and/or returned nothing (ignore error line below) - URL[{}]".format(url))
