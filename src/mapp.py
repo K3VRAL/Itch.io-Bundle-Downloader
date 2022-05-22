@@ -65,7 +65,7 @@ def mapGames():
                 findingDownload = game.find("form", class_ = "form")
                 if findingDownload != None:
                     print("Game Not Claimed")
-                    error.write("\"Game not claimed\" is currently under development - Page[{}/{}] Game[{}/{}] Bundle[{}] Game[{}] - Error[{}]".format(page, len(pages), game_i, len(games), bundle, name, game))
+                    error.write("\"Game not claimed\" is currently under development - Page[{}/{}] Games[{}/{}] Bundle[{}] Game[{}] - Error[{}]".format(page, pages, game_i, len(games), bundle, name, game))
                     continue
 
                 # (Weird) View Page/REST: GET
@@ -76,7 +76,7 @@ def mapGames():
                     print("Game Viewing Page")
                     name = game.find("h2", class_ = "game_title").a.get_text()
                     url = findingDownload["href"]
-                    error.write("Unable to download due to link being disabled - Page[{}/{}] Game[{}/{}] Bundle[{}] Game[{}] URL[{}]".format(page, len(pages), game_i, len(games), bundle, name, url))
+                    error.write("Unable to download due to link being disabled - Page[{}/{}] Games[{}/{}] Bundle[{}] Game[{}] URL[{}]".format(page, pages, game_i, len(games), bundle, name, url))
                     continue
 
                 # All Else Fails
