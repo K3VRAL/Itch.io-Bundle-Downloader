@@ -6,7 +6,7 @@ import setup
 
 title = False
 
-def write(message):
+def write(message):    
     global title
     if not title:
         err_ = open(setup.errorFile, "a")
@@ -14,5 +14,6 @@ def write(message):
         err_.close()
         title = True
     err_ = open(setup.errorFile, "a")
-    err_.write("{}\n".format(message))
+    err_.write(f"{message}\n")
+    
     err_.close()

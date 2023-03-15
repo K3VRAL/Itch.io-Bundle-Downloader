@@ -7,19 +7,19 @@ import setup
 import error
 
 def makeGameFolder(bundle, name):
-    gamesPath = "{}/downloaded/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", name))
+    gamesPath = "{}/downloaded/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", name))
     if not os.path.isdir(gamesPath):
         print("Making Game Folder [{}] from Bundle [{}]".format(name, bundle))
         os.mkdir(gamesPath)
 
 def makeBundleFolder(name):
-    bundlePath = "{}/downloaded/{}".format(os.getcwd(), re.sub("/", "_", name))
+    bundlePath = "{}/downloaded/{}".format(setup.args.folder, re.sub("/", "_", name))
     if not os.path.isdir(bundlePath):
         print("Making Bundle Folder [{}]".format(name))
         os.mkdir(bundlePath)
 
 def makeDownloadFolder():
-    downloadPath = "{}/downloaded".format(os.getcwd())
+    downloadPath = "{}/downloaded".format(setup.args.folder)
     if not os.path.isdir(downloadPath):
         print("Making Download Folder")
         os.mkdir(downloadPath)

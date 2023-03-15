@@ -1,5 +1,5 @@
 # This starts to map the items and their games
-
+from slugify import slugify
 import bs4
 import sys
 import os
@@ -25,7 +25,7 @@ def mapUploads(bundle, name):
         except:
             upload_id = upload.div.get_text()
 
-        filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", name), re.sub("/", "_", upload_name))
+        filename = "{}/downloaded/{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", name), re.sub("/", "_", upload_name))
         if not os.path.isfile(filename):
             setup.data[bundle]["games"][name]["uploads"][upload_name] = upload_id
             print("Adding to queue")
@@ -56,9 +56,9 @@ def mapGames():
                 findingDownload = game.find("a", class_ = "game_download_btn")
                 if findingDownload != None:
                     print("Game Claimed")
-                    name = game.find("h2", class_ = "game_title").a.get_text()
+                    name = slugify(game.find("h2", class_ = "game_title").a.get_text())
                     url = findingDownload["href"]
-                    setup.data[bundle]["games"][name] = { "url": url, "uploads": {}}
+                    setup.data[bundle]["games"][name] = { "url": url, "uploads": {}, "processed": False}
                     mapUploads(bundle, name)
                     continue
 
@@ -82,7 +82,10 @@ def mapGames():
 
                 # All Else Fails
                 error.write("!!!ERROR!!!")
-                error.write("{}".format(game))
+                try:
+                    error.write("{}".format(game))
+                except:
+                    print('error!')
                 error.write("!!!ERROR!!!")
                 print("Game Given Error Skipping")
 

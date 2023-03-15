@@ -6,6 +6,8 @@ def init():
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--username", help = "The input of the user's username for itch.io")
     parser.add_argument("-p", "--password", help = "The input of the user's password for itch.io")
+    parser.add_argument("-f", "--folder", help = "Target Download Folder")
+    parser.add_argument("-r", "--reprocess", help = "Reprocess")        
     parser.add_argument("-e", "--env", help = "Have the input in a .env file and read the username and password from there", action = argparse.BooleanOptionalAction)
     parser.set_defaults(env = False)
     parser.add_argument("-d", "--debug", help = "Don't download anything, just log to error files, make files, and create files but no data", action = argparse.BooleanOptionalAction)
