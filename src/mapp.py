@@ -1,5 +1,6 @@
 # This starts to map the items and their games
-from slugify import slugify
+
+import slugify
 import bs4
 import sys
 import os
@@ -56,7 +57,7 @@ def mapGames():
                 findingDownload = game.find("a", class_ = "game_download_btn")
                 if findingDownload != None:
                     print("Game Claimed")
-                    name = slugify(game.find("h2", class_ = "game_title").a.get_text())
+                    name = slugify.slugify(game.find("h2", class_ = "game_title").a.get_text())
                     url = findingDownload["href"]
                     setup.data[bundle]["games"][name] = { "url": url, "uploads": {}, "processed": False}
                     mapUploads(bundle, name)
@@ -85,7 +86,7 @@ def mapGames():
                 try:
                     error.write("{}".format(game))
                 except:
-                    print('error!')
+                    print("Error trying to get game!")
                 error.write("!!!ERROR!!!")
                 print("Game Given Error Skipping")
 

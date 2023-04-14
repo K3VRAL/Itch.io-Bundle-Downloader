@@ -46,7 +46,7 @@ def start():
         game_i = 0
         for game in games:
             try:
-                if (setup.data[bundle]["games"][game]["processed"] == True):
+                if (setup.data[bundle]["games"][game]["processed"]):
                     continue 
                 else:
                     game_i += 1
@@ -77,4 +77,4 @@ def start():
                         valid.checking(r, bundle, game, upload, url)
                     setup.data[bundle]["games"][game]["processed"] = True
             except:
-                print(f'error: {game}')
+                print("Error with: {}".format(game))

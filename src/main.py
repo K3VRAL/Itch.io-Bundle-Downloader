@@ -13,12 +13,11 @@ import download
 def main(argv):
     print("Username and Password being inputted")
     
-    print (setup.args)
     name = setup.args.username
     pass_ = setup.args.password
-    folder_ = setup.args.folder
-    reprocess_ = setup.args.reprocess
-    
+
+    if (setup.args.folder == None):
+        setup.args.folder = os.getcwd()
 
     if not setup.args.env:
         while True:
@@ -32,10 +31,6 @@ def main(argv):
                 pass_ = input("Input Password of itch.io: ")
                 if pass_ != "":
                     break
-            while setup.args.folder == None:
-                folder_ = os.getcwd()
-            while setup.args.reprocess == None:
-                reprocess_ = False
             user.login(name, pass_)
     else:
         config = dotenv.dotenv_values(".env")
@@ -49,71 +44,48 @@ def main(argv):
             print("No Password inputted")
             sys.exit(1)
 
-        folder_ = config.get("FOLDER")
-        if folder_ == None or folder_ == "":
-           folder_ = os.getcwd()
-
-        reprocess_ = config.get("REPROCESS")
-        if reprocess_ == None or reprocess_ == "":
-           reprocess_ = False
-
-        setup.args.folder = folder_
-        setup.args.reprocess = reprocess_
-
         user.login(name, pass_)
         if setup.cookies == None or setup.csrf == None:
             print("Username or Password inputted is incorrect")
             sys.exit(1)
 
-    print("Received valid cookies and csfr token")
+    print("Received valid cookies and csrf token")
 
-    # check for existing bundle list
-    setup.data = read()
-
-    if (setup.data == {} or reprocess_ == "True"):
+    # Check for existing bundle list
+    data_file = "datafile.json"
+    if (os.path.exists(data_file)):
+        with open(datafile) as f:
+            setup.data = json.load(f)
+    if (setup.data == {} or setup.args.reprocess):
         setup.data = {}
         mapp.start()
 
-    # If we're reprocessing, make sure all the games are set to processed = false
-    if (setup.args.reprocess == "True"):
+    # If we're reprocessing, make sure all the games that are set to processed equal to false
+    if (setup.args.reprocess):
         for bundle in setup.data:
             for game in setup.data[bundle]["games"]:
                 setup.data[bundle]["games"][game]["processed"] = False
 
-    #output the list of games so we don't have to keep looking it up
-    write(setup.data, "datafile.json")
-
-    bundles = list(setup.data.keys())
-    
-    if len(bundles) > 0:
+    # Output the list of games so we don't have to keep looking it up
+    write = open(data_file, "w")
+    json.dump(setup.data, write)
+    if len(list(setup.data.keys())) > 0:
         download.start()
-    
-    write(setup.data, "datafile.json")
+    json.dump(setup.data, write)
+    write.close()
 
+    # Errors output    
     errors = []
     for bundle in setup.data:
         for game in setup.data[bundle]["games"]:
             if (setup.data[bundle]["games"][game]["processed"] == False):
                 game = setup.data[bundle]["games"][game]
                 errors.append(game)
-           
-    #errors.json output    
-    write(errors, "errors.json")
+    with open("errors.json", "w") as error_file:
+        json.dump(errors, error_file)
    
+    # Done
     print("Finished")
-
-def write(data, filename):
-    with open( filename , "w" ) as write:
-        json.dump( data , write )
-
-def read():   
-    datafile = 'datafile.json'
-    if (os.path.exists(datafile)):
-        with open(datafile) as f:
-            data = json.load(f)
-            return data
-    else:
-        return {}
 
 if __name__ == "__main__":
     try:
