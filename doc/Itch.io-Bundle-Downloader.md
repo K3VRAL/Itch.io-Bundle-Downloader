@@ -20,6 +20,14 @@ The input of the user's username in the command line before the application is e
 
 The input of the user's password in the command line before the application is executed.
 
+**-f** or **--folder**
+
+Changes the target download folder location instead of using the current directory.
+
+**-r** or **--reprocess**
+
+Ignores all already downloaded files and their status.
+
 **-e** or **--env**
 
 Uses the `.env` file to be used automatically for the user's username and password.

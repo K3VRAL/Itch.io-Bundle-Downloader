@@ -8,7 +8,7 @@ def init():
     parser.add_argument("-n", "--username", help = "The input of the user's username for itch.io")
     parser.add_argument("-p", "--password", help = "The input of the user's password for itch.io")
     parser.add_argument("-f", "--folder", help = "Changes the target download folder location instead of using the current directory")
-    parser.add_argument("-r", "--reprocess", help = "Ignores all cached files and their status", action = argparse.BooleanOptionalAction)        
+    parser.add_argument("-r", "--reprocess", help = "Ignores all already downloaded files and their status", action = argparse.BooleanOptionalAction)        
     parser.set_defaults(reprocess = False)
     parser.add_argument("-e", "--env", help = "Have the input in a .env file and read the username and password from there", action = argparse.BooleanOptionalAction)
     parser.set_defaults(env = False)
