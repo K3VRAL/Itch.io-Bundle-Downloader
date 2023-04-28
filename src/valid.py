@@ -18,7 +18,7 @@ def checking(r, bundle, game, upload, url):
 
         if response_parsed.hostname in [ "w3g3a5v6.ssl.hwcdn.net", "www.oddwarg.com", "study-japanese.net" ]:
             r = reqretry.get(response_url, stream = True)
-            filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
+            filename = "{}/{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
             length = r.headers["Content-Length"]
 
             download.downloadFile(r, length, filename, response_parsed.hostname)
@@ -32,7 +32,7 @@ def checking(r, bundle, game, upload, url):
                 r_getLocation = reqretry.post(r_url, params = params, allow_redirects = False)
 
                 r = reqretry.get(r_getLocation.headers["Location"], stream = True)
-                filename = "{}/downloaded/{}/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
+                filename = "{}/{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", game), re.sub("/", "_", upload))
                 length = r.headers["Content-Length"]
 
                 download.downloadFile(r, length, filename, response_parsed.hostname)

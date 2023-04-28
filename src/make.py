@@ -7,24 +7,23 @@ import setup
 import error
 
 def makeGameFolder(bundle, name):
-    gamesPath = "{}/downloaded/{}/{}".format(os.getcwd(), re.sub("/", "_", bundle), re.sub("/", "_", name))
+    gamesPath = "{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", name))
     if not os.path.isdir(gamesPath):
         print("Making Game Folder [{}] from Bundle [{}]".format(name, bundle))
         os.mkdir(gamesPath)
 
 def makeBundleFolder(name):
-    bundlePath = "{}/downloaded/{}".format(os.getcwd(), re.sub("/", "_", name))
+    bundlePath = "{}/{}".format(setup.args.folder, re.sub("/", "_", name))
     if not os.path.isdir(bundlePath):
         print("Making Bundle Folder [{}]".format(name))
         os.mkdir(bundlePath)
 
 def makeDownloadFolder():
-    downloadPath = "{}/downloaded".format(os.getcwd())
-    if not os.path.isdir(downloadPath):
+    if not os.path.isdir(setup.args.folder):
         print("Making Download Folder")
-        os.mkdir(downloadPath)
+        os.mkdir(setup.args.folder)
 
-    setup.errorFile = downloadPath + "/ERRORS"
+    setup.errorFile = "{}/_errors.txt".format(setup.args.folder)
     if not os.path.isfile(setup.errorFile):
         print("Making Error File")
         open(setup.errorFile, "w").close()

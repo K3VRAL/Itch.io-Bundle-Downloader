@@ -45,29 +45,36 @@ def start():
         games = setup.data[bundle]["games"].keys()
         game_i = 0
         for game in games:
-            game_i += 1
-            print("--[{}/{}] | Downloading Game [{}]".format(game_i, len(games), game))
-            make.makeGameFolder(bundle, game)
+            try:
+                if (setup.data[bundle]["games"][game]["processed"]):
+                    continue 
+                else:
+                    game_i += 1
+                    print("--[{}/{}] | Downloading Game [{}]".format(game_i, len(games), game))
+                    make.makeGameFolder(bundle, game)
 
-            gameUrl = urllib.parse.urlparse(setup.data[bundle]["games"][game]["url"])
-            uploads = setup.data[bundle]["games"][game]["uploads"].keys()
-            if len(uploads) == 0:
-                error.write("No Uploads - Game[{}] URL[{}]".format(game, setup.data[bundle]["games"][game]["url"]))
-            upload_i = 0
-            for upload in uploads:
-                url = "{}://{}/{}/file/{}".format(gameUrl.scheme, gameUrl.hostname, gameUrl.path.split("/")[1], setup.data[bundle]["games"][game]["uploads"][upload])
-                if not validators.url(url):
-                    error.write("Malformed URL - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))
-                    continue
-                if not setup.data[bundle]["games"][game]["uploads"][upload].isdigit():
-                    error.write("ID is not an integer - Upload[{}] ID[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], game))
-                    continue
+                    gameUrl = urllib.parse.urlparse(setup.data[bundle]["games"][game]["url"])
+                    uploads = setup.data[bundle]["games"][game]["uploads"].keys()
+                    if len(uploads) == 0:
+                        error.write("No Uploads - Game[{}] URL[{}]".format(game, setup.data[bundle]["games"][game]["url"]))
+                    upload_i = 0
+                    for upload in uploads:
+                        url = "{}://{}/{}/file/{}".format(gameUrl.scheme, gameUrl.hostname, gameUrl.path.split("/")[1], setup.data[bundle]["games"][game]["uploads"][upload])
+                        if not validators.url(url):
+                            error.write("Malformed URL - Upload[{}] ID[{}] URL[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], url, game))
+                            continue
+                        if not setup.data[bundle]["games"][game]["uploads"][upload].isdigit():
+                            error.write("ID is not an integer - Upload[{}] ID[{}] Game[{}]".format(upload, setup.data[bundle]["games"][game]["uploads"][upload], game))
+                            continue
 
-                upload_i += 1
-                print("---[{}/{}] | Downloading Upload [{}]".format(upload_i, len(uploads), upload))
-                
-                key = gameUrl.path.split("/")[len(gameUrl.path.split("/"))-1]
-                params = { "source": "game_download", "key": key }
-                payload = { "csrf_token": setup.csrf }
-                r = reqretry.post(url, cookies = setup.cookies, data = payload, params = params)
-                valid.checking(r, bundle, game, upload, url)
+                        upload_i += 1
+                        print("---[{}/{}] | Downloading Upload [{}]".format(upload_i, len(uploads), upload))
+                        
+                        key = gameUrl.path.split("/")[len(gameUrl.path.split("/"))-1]
+                        params = { "source": "game_download", "key": key }
+                        payload = { "csrf_token": setup.csrf }
+                        r = reqretry.post(url, cookies = setup.cookies, data = payload, params = params)
+                        valid.checking(r, bundle, game, upload, url)
+                    setup.data[bundle]["games"][game]["processed"] = True
+            except:
+                print("Error with: {}".format(game))

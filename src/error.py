@@ -9,10 +9,8 @@ title = False
 def write(message):
     global title
     if not title:
-        err_ = open(setup.errorFile, "a")
-        err_.write("{} {} {}\n".format("-" * 10, str(datetime.datetime.now()), "-" * 10))
-        err_.close()
+        with open(setup.errorFile, "a") as err:
+            err.write("{} {} {}\n".format("-" * 10, str(datetime.datetime.now()), "-" * 10))
         title = True
-    err_ = open(setup.errorFile, "a")
-    err_.write("{}\n".format(message))
-    err_.close()
+    with open(setup.errorFile, "a") as err:
+        err.write("{}\n".format(message))
