@@ -15,7 +15,11 @@ import make
 def mapUploads(bundle, name):
     r = reqretry.get(setup.data[bundle]["games"][name]["url"], cookies = setup.cookies)
 
-    uploads = bs4.BeautifulSoup(r.text, "html.parser").find("div", class_ = "upload_list_widget").find_all("div", class_ = "upload")
+    upload_list = bs4.BeautifulSoup(r.text, "html.parser").find("div", class_ = "upload_list_widget")
+    if upload_list == None:
+        return False
+
+    uploads = upload_list.find_all("div", class_ = "upload")
     upload_i = 0
     for upload in uploads:
         upload_i += 1
@@ -26,7 +30,7 @@ def mapUploads(bundle, name):
         except:
             upload_id = upload.div.get_text()
 
-        filename = "{}/downloaded/{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", name), re.sub("/", "_", upload_name))
+        filename = "{}/{}/{}/{}".format(setup.args.folder, re.sub("/", "_", bundle), re.sub("/", "_", name), re.sub("/", "_", upload_name))
         if not os.path.isfile(filename):
             setup.data[bundle]["games"][name]["uploads"][upload_name] = upload_id
             print("Adding to queue")
@@ -34,7 +38,7 @@ def mapUploads(bundle, name):
             print("Already downloaded")
     if len(setup.data[bundle]["games"][name]["uploads"]) == 0:
         del setup.data[bundle]["games"][name]
-
+    return True
 
 def mapGames():
     print("Getting all items from each bundle")
@@ -60,7 +64,9 @@ def mapGames():
                     name = slugify.slugify(game.find("h2", class_ = "game_title").a.get_text())
                     url = findingDownload["href"]
                     setup.data[bundle]["games"][name] = { "url": url, "uploads": {}, "processed": False}
-                    mapUploads(bundle, name)
+                    if mapUploads(bundle, name) == False:
+                        error.write("Item gave Error when trying to extract Upload List - Page[{}/{}] Games[{}/{}] Bundle[{}] Game[{}] - Error[{}]".format(page, pages, game_i, len(games), bundle, name, game))
+
                     continue
 
                 # Not Claimed item/REST: POST

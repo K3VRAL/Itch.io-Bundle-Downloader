@@ -3,12 +3,13 @@
 import sys
 import dotenv
 import os
-
 import json
+
 import setup
 import user
 import mapp
 import download
+import error
 
 def main(argv):
     print("Username and Password being inputted")
@@ -16,7 +17,9 @@ def main(argv):
     name = setup.args.username
     pass_ = setup.args.password
 
-    if (setup.args.folder == None):
+    if (setup.args.folder != None):
+        setup.args.folder = " ".join(setup.args.folder)
+    else:
         setup.args.folder = os.getcwd()
 
     if not setup.args.env:
@@ -52,9 +55,9 @@ def main(argv):
     print("Received valid cookies and csrf token")
 
     # Check for existing bundle list
-    data_file = "datafile.json"
-    if (os.path.exists(data_file)):
-        with open(datafile) as f:
+    datafile = "{}/_datafile.json".format(setup.args.folder)
+    if (os.path.exists(datafile)):
+        with open(datafile, "r") as f:
             setup.data = json.load(f)
     if (setup.data == {} or setup.args.reprocess):
         setup.data = {}
@@ -67,22 +70,17 @@ def main(argv):
                 setup.data[bundle]["games"][game]["processed"] = False
 
     # Output the list of games so we don't have to keep looking it up
-    write = open(data_file, "w")
-    json.dump(setup.data, write)
-    if len(list(setup.data.keys())) > 0:
-        download.start()
-    json.dump(setup.data, write)
-    write.close()
+    with open(datafile, "w") as write:
+        json.dump(setup.data, write)
+        if len(list(setup.data.keys())) > 0:
+            download.start()
+        json.dump(setup.data, write)
 
     # Errors output    
-    errors = []
     for bundle in setup.data:
         for game in setup.data[bundle]["games"]:
             if (setup.data[bundle]["games"][game]["processed"] == False):
-                game = setup.data[bundle]["games"][game]
-                errors.append(game)
-    with open("errors.json", "w") as error_file:
-        json.dump(errors, error_file)
+                error.write("Game was not processed - Bundle[{}] Error[{}]".format(bundle, game))
    
     # Done
     print("Finished")
